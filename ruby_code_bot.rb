@@ -12,9 +12,10 @@ class RubyCodeBot < Sinatra::Base
 
   post '/execute' do
     content_type :json
-    puts params
     result = execute params['text']
     { text: 'Result:', attachments: [text: result.to_s] }.to_json
+  rescue => e
+    { text: 'Exception:', attachments: [text: e.message] }.to_json
   end
 
   def execute(code)
