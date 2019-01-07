@@ -14,7 +14,7 @@ class RubyCodeBot < Sinatra::Base
     content_type :json
     puts params
     result = execute params['text']
-    { text: 'Result:', attachments: [text: result] }.to_json
+    { text: 'Result:', attachments: [text: result.to_s] }.to_json
   end
 
   def execute(code)
