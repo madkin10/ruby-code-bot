@@ -16,11 +16,11 @@ class RubyCodeBot < Sinatra::Base
     response = { attachments: [{ title: 'Code:', text: params['text'] }] }
     result = SafeRuby.eval(params['text'])
     response[:attachments] << { color: 'good', title: 'Result:', text: result.to_s }
-    response[:attachments] << { type: 'button', text: 'Share', url: share_url }
+    response[:attachments] << { actions: [type: 'button', text: 'Share', url: share_url] }
     response.to_json
   rescue SyntaxError, StandardError => e
     response[:attachments] << { color: 'danger', title: 'Exception:', text: e.message }
-    response[:attachments] << { type: 'button', text: 'Share', url: share_url }
+    response[:attachments] << { actions: [type: 'button', text: 'Share', url: share_url] }
     response.to_json
   end
 
