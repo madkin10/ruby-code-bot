@@ -9,7 +9,16 @@ class RubyCodeBot < Sinatra::Base
   SHARE_ACTION = 'share'.freeze
 
   before do
-    halt 401 unless SLACK_TOKENS.include?(params[:token])
+    if params[:token]
+      token = params[:token]
+    elsif params[:payload]
+      payload = JSON.parse(params[:payload], object_class: OpenStruct)
+      token = payload.token
+    else
+      token = nil
+    end
+
+    halt 401 unless SLACK_TOKENS.include?(token)
   end
 
   post '/execute' do
@@ -26,7 +35,7 @@ class RubyCodeBot < Sinatra::Base
   end
 
   post '/message_action' do
-    payload=JSON.parse(params[:payload], object_class: OpenStruct)
+    payload = JSON.parse(params[:payload], object_class: OpenStruct)
     puts payload.inspect
 
     case payload&.actions&.first&.name
