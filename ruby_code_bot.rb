@@ -22,6 +22,7 @@ class RubyCodeBot < Sinatra::Base
   end
 
   post '/execute' do
+    puts params.inspect
     content_type :json
     response = { response_type: 'in_channel', attachments: [{ title: 'Code:', text: "```#{params['text']}```", mrkdwn_in: ['text']}] }
     result = SafeRuby.eval(params['text'])
