@@ -21,8 +21,6 @@ class RubyCodeBot < Sinatra::Base
     halt 401 unless SLACK_TOKENS.include?(token)
   end
 
-  "mrkdwn_in": ["text", "pretext"]
-
   post '/execute' do
     content_type :json
     response = { response_type: 'in_channel', attachments: [{ title: 'Code:', text: "```#{params['text']}```" mrkdwn_in: ['text']}] }
