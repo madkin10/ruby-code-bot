@@ -23,26 +23,24 @@ class RubyCodeBot < Sinatra::Base
 
   post '/execute' do
     content_type :json
-    response = { attachments: [{ title: 'Code:', text: params['text'] }] }
+    response = { response_type: 'in_channel', attachments: [{ title: 'Code:', text: params['text'] }] }
     result = SafeRuby.eval(params['text'])
     response[:attachments] << { color: 'good', title: 'Result:', text: result.to_s }
-    response[:attachments] << { attachment_type: 'default', text: '', callback_id: 'execute', actions: [{ text: 'Share', name: SHARE_ACTION, value: SHARE_ACTION, type: 'button' }] }
     response.to_json
   rescue SyntaxError, StandardError => e
     response[:attachments] << { color: 'danger', title: 'Exception:', text: e.message }
-    response[:attachments] << { attachment_type: 'default', text: '', callback_id: 'execute', actions: [{ text: 'Share', name: SHARE_ACTION, value: SHARE_ACTION, type: 'button' }] }
     response.to_json
   end
 
   post '/message_action' do
     payload = JSON.parse(params[:payload], object_class: OpenStruct)
-    logger.info payload.inspect
+    puts payload.inspect
 
     case payload&.actions&.first&.name
     when 'share'
-      logger.info 'share message'
+      puts 'share message'
     else
-      logger.info 'Unhandled action'
+      puts 'Unhandled action'
     end
   end
 end
