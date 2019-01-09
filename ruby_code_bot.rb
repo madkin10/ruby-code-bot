@@ -12,29 +12,9 @@ class RubyCodeBot < Sinatra::Base
 
   post '/execute' do
     content_type :json
-    result = execute params['text']
+    result = SafeRuby.eval(params['text'])
     { text: 'Result:', attachments: [text: result.to_s] }.to_json
   rescue SyntaxError, StandardError => e
     { text: 'Exception:', attachments: [text: e.message] }.to_json
-  end
-
-  def execute(code)
-    code.untaint
-    proc do
-      $SAFE = 1
-      BlankSlate.new.instance_eval do
-        binding
-      end.eval(code)
-    end.call
-  end
-
-  class BlankSlate
-    instance_methods.each do |name|
-      class_eval do
-        unless name =~ /^__|^instance_eval$|^binding$|^object_id$/
-          undef_method name
-        end
-      end
-    end
   end
 end

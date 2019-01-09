@@ -1,8 +1,11 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    childprocess (0.9.0)
+      ffi (~> 1.0, >= 1.0.11)
     domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
+    ffi (1.10.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     mime-types (3.2.2)
@@ -17,6 +20,8 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    safe_ruby (1.0.4)
+      childprocess (>= 0.3.9)
     sinatra (2.0.4)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -32,7 +37,11 @@ PLATFORMS
 
 DEPENDENCIES
   rest-client
+  safe_ruby
   sinatra
 
+RUBY VERSION
+   ruby 2.5.3p105
+
 BUNDLED WITH
-   1.16.1
+   1.16.6
