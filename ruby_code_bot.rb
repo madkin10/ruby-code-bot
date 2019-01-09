@@ -36,13 +36,13 @@ class RubyCodeBot < Sinatra::Base
 
   post '/message_action' do
     payload = JSON.parse(params[:payload], object_class: OpenStruct)
-    puts payload.inspect
+    logger.info payload.inspect
 
     case payload&.actions&.first&.name
     when 'share'
-      puts 'share message'
+      logger.info 'share message'
     else
-      puts 'Unhandled action'
+      logger.info 'Unhandled action'
     end
   end
 end
