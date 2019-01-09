@@ -13,8 +13,11 @@ class RubyCodeBot < Sinatra::Base
   post '/execute' do
     content_type :json
     result = SafeRuby.eval(params['text'])
-    { text: 'Result:', attachments: [text: result.to_s] }.to_json
+    response = { attachments: [title: 'Code:', text: params['text']] }
+    response[:attachments] << { color: 'good', title: 'Result:', text: result.to_s }
   rescue SyntaxError, StandardError => e
-    { text: 'Exception:', attachments: [text: e.message] }.to_json
+    response[:attachments] << { color: 'danger', title: 'Exception:', text: e.message }
+  ensure
+    response.to_json
   end
 end
