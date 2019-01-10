@@ -1,7 +1,6 @@
 require 'json'
 require 'sinatra/base'
 require 'safe_ruby'
-require 'ostruct'
 require 'rest-client'
 
 class RubyCodeBot < Sinatra::Base
