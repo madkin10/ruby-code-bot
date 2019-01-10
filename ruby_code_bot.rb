@@ -6,8 +6,22 @@ require 'rest-client'
 class RubyCodeBot < Sinatra::Base
   SLACK_TOKENS = ENV['SLACK_TOKENS']&.split || []
 
-  before do
+  before '/execute' do
     halt 401 unless SLACK_TOKENS.include?(params[:token])
+  end
+
+  get '/slack/oauth' do
+    response = RestClient.get(
+      'https://slack.com/api/oauth.access',
+      params:
+        {
+          code: params[:code],
+          client_id: ENV['CLIENT_ID'],
+          client_secret: ENV['CLIENT_SECRET']
+        }
+    )
+
+    response.to_json
   end
 
   post '/execute' do
