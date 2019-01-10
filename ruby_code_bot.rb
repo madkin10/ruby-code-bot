@@ -27,7 +27,7 @@ class RubyCodeBot < Sinatra::Base
     result = SafeRuby.eval(params[:text])
     response[:attachments] << { color: 'good', title: 'Result:', text: result.to_s }
     RestClient.post(params[:response_url], response.to_json, headers: 'Content-Type: application/json')
-    {}.to_json
+    status :ok
   rescue SyntaxError, StandardError => e
     response[:attachments] << { color: 'danger', title: 'Exception:', text: e.message }
     response.to_json
