@@ -6,18 +6,8 @@ require 'rest-client'
 
 class RubyCodeBot < Sinatra::Base
   SLACK_TOKENS = ENV['SLACK_TOKENS']&.split || []
-  SHARE_ACTION = 'share'.freeze
 
   before do
-    if params[:token]
-      token = params[:token]
-    elsif params[:payload]
-      payload = JSON.parse(params[:payload], object_class: OpenStruct)
-      token = payload.token
-    else
-      token = nil
-    end
-
     halt 401 unless SLACK_TOKENS.include?(token)
   end
 
@@ -30,18 +20,7 @@ class RubyCodeBot < Sinatra::Base
     status :ok
   rescue SyntaxError, StandardError => e
     response[:attachments] << { color: 'danger', title: 'Exception:', text: e.message }
-    response.to_json
-  end
-
-  post '/message_action' do
-    payload = JSON.parse(params[:payload], object_class: OpenStruct)
-    puts payload.inspect
-
-    case payload&.actions&.first&.name
-    when 'share'
-      puts 'share message'
-    else
-      puts 'Unhandled action'
-    end
+    RestClient.post(params[:response_url], response.to_json, headers: 'Content-Type: application/json')
+    status :ok
   end
 end
