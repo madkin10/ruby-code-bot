@@ -17,7 +17,8 @@ class RubyCodeBot < Sinatra::Base
         {
           code: params[:code],
           client_id: ENV['CLIENT_ID'],
-          client_secret: ENV['CLIENT_SECRET']
+          client_secret: ENV['CLIENT_SECRET'],
+          redirect_uri: ENV['HOST'] + '/slack/oauth'
         }
     )
 
