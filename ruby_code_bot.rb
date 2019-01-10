@@ -2,7 +2,7 @@ require 'json'
 require 'sinatra/base'
 require 'safe_ruby'
 require 'ostruct'
-
+require 'rest-client'
 
 class RubyCodeBot < Sinatra::Base
   SLACK_TOKENS = ENV['SLACK_TOKENS']&.split || []
@@ -22,12 +22,12 @@ class RubyCodeBot < Sinatra::Base
   end
 
   post '/execute' do
-    puts params.inspect
     content_type :json
-    response = { response_type: 'in_channel', attachments: [{ title: 'Code:', text: "```#{params['text']}```", mrkdwn_in: ['text']}] }
-    result = SafeRuby.eval(params['text'])
+    response = { response_type: 'in_channel', attachments: [{ title: 'Code:', text: "```#{params[:text]}```", mrkdwn_in: ['text']}] }
+    result = SafeRuby.eval(params[:text])
     response[:attachments] << { color: 'good', title: 'Result:', text: result.to_s }
-    response.to_json
+    RestClient.post(params[:response_url], response.to_json, headers: 'Content-Type: application/json')
+    {}.to_json
   rescue SyntaxError, StandardError => e
     response[:attachments] << { color: 'danger', title: 'Exception:', text: e.message }
     response.to_json
