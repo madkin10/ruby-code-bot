@@ -13,7 +13,7 @@ class RubyCodeBot < Sinatra::Base
 
   post '/execute' do
     content_type :json
-    response = { response_type: 'in_channel', attachments: [{ title: 'Code:', text: "```#{params[:text]}```", mrkdwn_in: ['text']}] }
+    response = { response_type: 'in_channel', attachments: [{ title: "<@#{params[:user_id]}> Executed:", text: "```#{params[:text]}```", mrkdwn_in: ['text']}] }
     begin
       result = SafeRuby.eval(params[:text])
       response[:attachments] << { color: 'good', title: 'Result:', text: result.to_s }
