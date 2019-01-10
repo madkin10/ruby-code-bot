@@ -14,12 +14,12 @@ class RubyCodeBot < Sinatra::Base
   post '/execute' do
     content_type :json
     response = { response_type: 'in_channel', attachments: [{ title: 'Code:', text: "```#{params[:text]}```", mrkdwn_in: ['text']}] }
-    result = SafeRuby.eval(params[:text])
-    response[:attachments] << { color: 'good', title: 'Result:', text: result.to_s }
-    RestClient.post(params[:response_url], response.to_json, headers: 'Content-Type: application/json')
-    status :ok
-  rescue SyntaxError, StandardError => e
-    response[:attachments] << { color: 'danger', title: 'Exception:', text: e.message }
+    begin
+      result = SafeRuby.eval(params[:text])
+      response[:attachments] << { color: 'good', title: 'Result:', text: result.to_s }
+    rescue SyntaxError, StandardError => e
+      response[:attachments] << { color: 'danger', title: 'Exception:', text: e.message }
+    end
     RestClient.post(params[:response_url], response.to_json, headers: 'Content-Type: application/json')
     status :ok
   end
